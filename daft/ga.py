@@ -3,6 +3,7 @@ import multiprocessing
 
 from deap import algorithms, base, creator, tools
 
+
 class IndexSelectionGA:
     """
     IndexSelectionGA is a class that sets up a Genetic Algorithm that will
@@ -24,7 +25,7 @@ class IndexSelectionGA:
         The probability of mutating each gene during mutation.
     tournsize : int
         The tournament size for chromosome selection.
-        
+
     Methods
     ----------
     run(**kwargs)
@@ -51,7 +52,7 @@ class IndexSelectionGA:
             is 0.1
         tournsize : int, optional
             The tournament size for chromosome selection. Default is 3.
-            
+
         Returns
         ----------
         None
@@ -60,13 +61,13 @@ class IndexSelectionGA:
         # set the number of indices to return and the total number of indices.
         self.n_sub = n_sub
         self.n_total = n_total
-        
+
         # set the fitness function to be minimised.
         self.fitness_min = fitness_min
-        
+
         # initialise the fitness function with DEAP.
         creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-        
+
         # initialise the individial (chromosome) with DEAP.
         creator.create("Individual", list, fitness=creator.FitnessMin)
 
@@ -79,28 +80,38 @@ class IndexSelectionGA:
 
         # define the parameter space as a random sample from the indices.
         self.toolbox.register("indices", random.sample, range(self.n_total), self.n_sub)
-        
+
         # initilise the individuals, population and the evaluation function.
-        self.toolbox.register("individual", tools.initIterate, creator.Individual, self.toolbox.indices)
-        self.toolbox.register("population", tools.initRepeat, list, self.toolbox.individual)
+        self.toolbox.register(
+            "individual", tools.initIterate, creator.Individual, self.toolbox.indices
+        )
+        self.toolbox.register(
+            "population", tools.initRepeat, list, self.toolbox.individual
+        )
         self.toolbox.register("evaluate", self.fitness_min)
-        
+
         # set up random uniform mating.
         self.indpb_mate = kwargs.pop("indpb_mate", 0.2)
         self.toolbox.register("mate", tools.cxUniform, indpb=self.indpb_mate)
-        
+
         # set up mutation to be random uniform dram from indices.
         self.indpb_mutate = kwargs.pop("indpb_mutate", 0.1)
-        self.toolbox.register("mutate", tools.mutUniformInt, low=0, up=self.n_total-1, indpb=self.indpb_mutate)
-        
+        self.toolbox.register(
+            "mutate",
+            tools.mutUniformInt,
+            low=0,
+            up=self.n_total - 1,
+            indpb=self.indpb_mutate,
+        )
+
         # set up the tournament selection process.
         self.tournsize = kwargs.pop("tournsize", 3)
         self.toolbox.register("select", tools.selTournament, tournsize=self.tournsize)
-    
+
     def run(self, **kwargs):
         """
         Run the Genetic Algorithm.
-        
+
         Parameters
         ----------
         n : int, optional.
@@ -113,22 +124,24 @@ class IndexSelectionGA:
             The probability of mating. Default is 0.5.
         mutpb : float, optional
             The probability of mutating. Default is 0.2.
-            
+
         Returns
         ----------
         list
         """
-        
+
         # initialise the population.
         population = self.toolbox.population(n=kwargs.pop("n", 100))
-        
+
         # run the GA.
-        algorithms.eaSimple(population, 
-                            self.toolbox, 
-                            cxpb=kwargs.pop("cxpb", 0.5), 
-                            mutpb=kwargs.pop("mutpb", 0.2), 
-                            ngen=kwargs.pop("ngen", 100), 
-                            verbose=False)
-        
+        algorithms.eaSimple(
+            population,
+            self.toolbox,
+            cxpb=kwargs.pop("cxpb", 0.5),
+            mutpb=kwargs.pop("mutpb", 0.2),
+            ngen=kwargs.pop("ngen", 100),
+            verbose=False,
+        )
+
         # return the top chromosomes.
         return tools.selBest(population, k=kwargs.pop("k", 1))
