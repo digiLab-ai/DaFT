@@ -90,4 +90,4 @@ class DaFT:
         indices = self.ga.run(**kwargs)[0]
 
         # return the thinned distribution.
-        return self.X[indices, :]
+        return self.X[indices, :], indices
