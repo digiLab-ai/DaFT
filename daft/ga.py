@@ -93,14 +93,13 @@ class IndexSelectionGA:
         # set up random uniform mating.
         self.indpb_mate = kwargs.pop("indpb_mate", 0.2)
 
-        self.toolbox.register("mate", tools.cxUniform, indpb=self.indpb_mate)
-
+        self.toolbox.register("mate", tools.cxUniform, indpb=self.indpb_mate) 
+        
         # set up mutation to be random uniform dram from indices.
-
+        
         self.indpb_mutate = kwargs.pop("indpb_mutate", 0.1)
         self.toolbox.register(
             "mutate",
-            #    tools.mutUniformInt,
             combined_mutation,
             low=0,
             up=self.n_total - 1,
@@ -148,8 +147,6 @@ class IndexSelectionGA:
 
         # return the top chromosomes.
         return tools.selBest(population, k=kwargs.pop("k", 1))
-
-
 def combined_mutation(individual, low, up, indpb):
     """Mutate an individual by replacing attributes, with probability *indpb*,
     by a integer uniformly drawn between *low* and *up* inclusively.
@@ -163,11 +160,14 @@ def combined_mutation(individual, low, up, indpb):
     :param indpb: Independent probability for each attribute to be mutated.
     :returns: A tuple of one individual.
     """
-
-    a = np.random.choice(np.arange(0, 2), p=[0.9, 0.1])
+    
+    # normal mutation with chance of 90%
+    a = np.random.choice(np.arange(0,2), p=[0.9, 0.1])
     if a == 0:
-        individual = tools.mutUniformInt(individual, low, up, indpb)
+       individual = tools.mutUniformInt(individual,low,up,indpb)
+    # completly new chromosome with chance 10%
     else:
-        individual = tools.mutUniformInt(individual, low, up, 1)
+        individual = tools.mutUniformInt(individual,low,up,1)
 
-    return individual
+    return individual    
+
