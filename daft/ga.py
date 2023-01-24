@@ -1,6 +1,6 @@
 import random
 import multiprocessing
-
+import numpy as np
 from deap import algorithms, base, creator, tools
 
 
@@ -92,13 +92,16 @@ class IndexSelectionGA:
 
         # set up random uniform mating.
         self.indpb_mate = kwargs.pop("indpb_mate", 0.2)
+
         self.toolbox.register("mate", tools.cxUniform, indpb=self.indpb_mate)
 
         # set up mutation to be random uniform dram from indices.
+
         self.indpb_mutate = kwargs.pop("indpb_mutate", 0.1)
         self.toolbox.register(
             "mutate",
-            tools.mutUniformInt,
+            #    tools.mutUniformInt,
+            combined_mutation,
             low=0,
             up=self.n_total - 1,
             indpb=self.indpb_mutate,
@@ -145,3 +148,26 @@ class IndexSelectionGA:
 
         # return the top chromosomes.
         return tools.selBest(population, k=kwargs.pop("k", 1))
+
+
+def combined_mutation(individual, low, up, indpb):
+    """Mutate an individual by replacing attributes, with probability *indpb*,
+    by a integer uniformly drawn between *low* and *up* inclusively.
+    :param individual: :term:`Sequence <sequence>` individual to be mutated.
+    :param low: The lower bound or a :term:`python:sequence` of
+                of lower bounds of the range from which to draw the new
+                integer.
+    :param up: The upper bound or a :term:`python:sequence` of
+               of upper bounds of the range from which to draw the new
+               integer.
+    :param indpb: Independent probability for each attribute to be mutated.
+    :returns: A tuple of one individual.
+    """
+
+    a = np.random.choice(np.arange(0, 2), p=[0.9, 0.1])
+    if a == 0:
+        individual = tools.mutUniformInt(individual, low, up, indpb)
+    else:
+        individual = tools.mutUniformInt(individual, low, up, 1)
+
+    return individual
