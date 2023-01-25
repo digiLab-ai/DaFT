@@ -160,23 +160,21 @@ def combined_mutation(individual, low, up, indpb):
     individual : np.ndarray
         individual to be mutated.
     low : int
-        The lower bound or a :term:`python:sequence` of
-        of lower bounds of the range from which to draw the new
+        The lower bounds of the range from which to draw the new
         integer.
     up : int
-        The upper bound or a :term:`python:sequence` of
-        of upper bounds of the range from which to draw the new
+        The upper bound of the range from which to draw the new
         integer.
     indpb : int
         Independent probability for each attribute to be mutated.
 
     Returns
     ----------
-    tuple 
+    tuple
     """
 
     # normal mutation with chance of 90%
-    if random.uniform() < 0.9:
+    if np.random.uniform() < 0.9:
         individual = tools.mutUniformInt(individual, low, up, indpb)
     # completly new chromosome with chance 10%
     else:
