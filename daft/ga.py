@@ -92,11 +92,9 @@ class IndexSelectionGA:
 
         # set up random uniform mating.
         self.indpb_mate = kwargs.pop("indpb_mate", 0.2)
-
         self.toolbox.register("mate", tools.cxUniform, indpb=self.indpb_mate)
 
         # set up mutation to be random uniform dram from indices.
-
         self.indpb_mutate = kwargs.pop("indpb_mutate", 0.1)
         self.toolbox.register(
             "mutate",
