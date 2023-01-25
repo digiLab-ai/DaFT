@@ -1,6 +1,6 @@
 import random
 import multiprocessing
-
+import numpy as np
 from deap import algorithms, base, creator, tools
 
 
@@ -98,7 +98,7 @@ class IndexSelectionGA:
         self.indpb_mutate = kwargs.pop("indpb_mutate", 0.1)
         self.toolbox.register(
             "mutate",
-            tools.mutUniformInt,
+            combined_mutation,
             low=0,
             up=self.n_total - 1,
             indpb=self.indpb_mutate,
@@ -145,3 +145,39 @@ class IndexSelectionGA:
 
         # return the top chromosomes.
         return tools.selBest(population, k=kwargs.pop("k", 1))
+
+
+def combined_mutation(individual, low, up, indpb):
+    """
+    Firstly the type of mutation is choosed with 90% and 10% accordigly.
+    The first mutation type mutates an individual by replacing attributes,
+    with probability *indpb*, by a integer uniformly drawn between *low*
+    and *up* inclusively.The second mutation type mutates a whole individual
+    by replacing all attibuttes by ingegeres uniformly drawn by the initial chain.
+
+    Parameters
+    ----------
+    individual : np.ndarray
+        individual to be mutated.
+    low : int
+        The lower bounds of the range from which to draw the new
+        integer.
+    up : int
+        The upper bound of the range from which to draw the new
+        integer.
+    indpb : int
+        Independent probability for each attribute to be mutated.
+
+    Returns
+    ----------
+    tuple
+    """
+
+    # normal mutation with chance of 90%
+    if np.random.uniform() < 0.9:
+        individual = tools.mutUniformInt(individual, low, up, indpb)
+    # completly new chromosome with chance 10%
+    else:
+        individual = tools.mutUniformInt(individual, low, up, 1)
+
+    return individual
