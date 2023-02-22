@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DaFT</title>
+        <link rel="shortcut icon" type="image/jpg" href="icons/daft_favicon.ico" />
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="libraries/bootstrap-dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css" />
+        <link rel="stylesheet" href="styles/base.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@600;900&display=swap" rel="stylesheet" />
+        <script src="libraries/bootstrap-dist/js/bootstrap.min.js"></script>
+        <script src="libraries/jquery-3.6.0.min.js"></script>
+        <script src="libraries/d3.min.js"></script>
+        <script src="script/input.js"></script>
+        <script src="script/parameterise.js"></script>
+        <script src="script/processing.js"></script>
+        <script src="script/output.js"></script>
+        <script src="script/client.js"></script>
+    </head>
+    <body>
+        <div class="d-flex align-items-center justify-content-center" style="height: 100vh">
+            <div class="card p-5" style="text-align: center; width: 600px">
+                <h1>DaFT</h1>
+                <h3>Feed me data!</h3>
+                <hr />
+                <div id="stageInput" style="display: block">
+                    <div>
+                        <input id="fileElem" type="file" accept="*.csv" />
+                        <label class="button" for="fileElem">Select file</label>
+                    </div>
+                </div>
+                <div id="stageParameterise" style="display: none">
+                    <div>
+                        <label for="parameteriseNSub" class="form-label">Subset size: <span id="displayNSub">#</span></label>
+                        <input id="parameteriseNSub" type="range" class="form-range" min="1" max="20" onInput="$('#displayNSub').html(this.value)" />
+                        <label for="parameteriseNPop" class="form-label">Population size: <span id="displayNPop">#</span></label>
+                        <input
+                            id="parameteriseNPop"
+                            type="range"
+                            class="form-range"
+                            min="1"
+                            max="100"
+                            value="50"
+                            onInput="$('#displayNPop').html(this.value)"
+                        />
+                        <label for="parameteriseNGen" class="form-label">Generations: <span id="displayNGen">#</span></label>
+                        <input
+                            id="parameteriseNGen"
+                            type="range"
+                            class="form-range"
+                            min="10"
+                            max="1000"
+                            value="200"
+                            onInput="$('#displayNGen').html(this.value)"
+                        />
+                        <hr />
+                        <button class="btn btn-primary" onClick="submit()">Run</button>
+                    </div>
+                </div>
+                <div id="stageProcessing" style="display: none">
+                    <div class="spinner-border text-primary" style="width: 7rem; height: 7rem" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                </div>
+                <div id="stageOutput" style="display: none">
+                    <div>
+                        <div id="plot"></div>
+                        <hr />
+                        <button class="btn btn-primary" onClick="window.location.reload();">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
